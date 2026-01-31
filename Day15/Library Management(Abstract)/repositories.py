@@ -1,0 +1,108 @@
+from abc import ABC, abstractmethod
+from typing import List, Dict
+
+from models import Book, Member, Loan
+
+
+class BookRepository(ABC):
+    @abstractmethod #Any class that inherits from this MUST implement these methods
+    def add(self, book: Book) -> None: #book : Book = type hint saying "this parameter should be a Book object"
+        pass
+
+    @abstractmethod
+    def get_by_id(self, book_id: str) -> Book:
+        pass
+
+    @abstractmethod
+    def update(self, book: Book) -> None:
+        pass
+
+    @abstractmethod
+    def list_all_books(self) -> List[Book]:
+        pass
+
+class MemberRepository(ABC):
+    @abstractmethod
+    def add(self, member: Member):
+        pass
+
+    @abstractmethod
+    def get_by_id(self, member_id: str) -> Member:
+        pass
+
+    @abstractmethod
+    def list_all_members(self) -> List[Member]:
+        pass
+
+class LoanRepository(ABC):
+    @abstractmethod
+    def add(self, loan: Loan):
+        pass
+
+    @abstractmethod
+    def get_by_id(self, loan_id: str) -> Loan:
+        pass
+
+    @abstractmethod
+    def update(self, loan: Loan) -> None:
+        pass
+
+    @abstractmethod
+    def list_all_loans(self) -> List[Loan]:
+        pass
+
+class InMemoryBookRepository(BookRepository): #Concrete Implementation
+
+    def __init__(self):
+        self.__book : Dict[str, Book] = {} #self.__book = {}
+
+    def add(self, book: Book) -> None:
+        self.__book[book.book_id] = book #book.book_id means Book object's book id
+
+    def get_by_id(self, book_id: str) -> Book:
+        return self.__book.get(book_id)
+
+
+    def update(self, book: Book) -> None:
+        self.__book[book.book_id] = book
+
+
+    def list_all_books(self) -> List[Book]:
+        return list(self.__book.values())
+
+
+class InMemoryMemberRepository(MemberRepository):
+
+    def __init__(self):
+        self.__member : Dict[str, Member] = {}
+
+    def add(self, member: Member):
+        self.__member[member.member_id] = member
+
+    def get_by_id(self, member_id: str) -> Member:
+        return self.__member.get(member_id)
+
+    def list_all_members(self) -> List[Member]:
+        return list(self.__member.values())
+
+
+class InMemoryLoanRepository(LoanRepository):
+
+    def __init__(self):
+        self.__loans : Dict[str, Loan] = {}
+
+    def add(self, loan: Loan):
+        self.__loans[loan.loan_id] = loan
+
+    def get_by_id(self, loan_id: str) -> Loan:
+        return self.__loans.get(loan_id)
+
+    def update(self, loan: Loan) -> None:
+        self.__loans[loan.loan_id] = loan
+
+    def list_all_loans(self) -> List[Loan]:
+        return list(self.__loans.values())
+
+
+#CRUD - CREATE, READ , UPDATE, DELETE
+
